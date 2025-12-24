@@ -1,0 +1,46 @@
+html{
+    /* Font from Google */
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    background-color: black;
+}
+
+body{
+    max-width: 800px;
+    margin-inline: auto;
+    padding: 1rem;
+    border: 1px solid white;
+    color: white;
+}
+
+h1{
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    color: lightblue; 
+    text-shadow: 1px 1px 3px white;
+}
+
+p{
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+ul{
+    background-color: black;
+    border: 1px solid grey;
+    padding: 1rem;
+}
+
+li{
+    font-size: 1.2rem;
+    line-height: 2;
+    color: white;
+}
+
+img{
+    display: block;
+    margin-inline: auto;
+    max-width: 100%; 
+}
