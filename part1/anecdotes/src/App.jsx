@@ -37,12 +37,28 @@ const App = () => {
     setSelected(randomIndex);
   };
 
+  const getMaxAnecdoteIdx = () => {
+    let max = 0;
+    for(let i = 0; i < anecdotes.length; i++){
+      if(votes[i] > votes[max]){
+        max = i;
+      }
+    }
+    return max;
+  }
+
   return (
     <div>
+      <h1>Anecdote of the Day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
+
       <Button onClick={handleVote} text="vote"/>
       <Button onClick={handleAnecdoteChange} text="next anecdote"/>
+
+      <h2>Anecdote with Most Votes</h2>
+      <p>{anecdotes[getMaxAnecdoteIdx()]}</p>
+      <p>has {votes[getMaxAnecdoteIdx()]} votes</p> 
     </div>
   );
 };
