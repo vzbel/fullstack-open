@@ -7,6 +7,9 @@ const Button = ({onClick, text}) => (
 
 // Display cafe ratings
 const Statistics = (props) => {
+  if(props.all === 0){
+    return <p>No feedback given</p>
+  }
   return (
     <div>
       <h2>statistics</h2>
