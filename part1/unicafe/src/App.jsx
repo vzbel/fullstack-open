@@ -5,9 +5,14 @@ const Button = ({onClick, text}) => (
   <button onClick={onClick}>{text}</button>
 );
 
-const StatisticLine = ({text, value}) => (
-  <p>{text}: {value}</p>
-);
+const StatisticLine = ({text, value}) => {
+  return (
+    <tr>
+      <th>{text}</th>
+      <td>{value}</td>
+    </tr>
+  );
+};
 
 // Display cafe ratings
 const Statistics = (props) => {
@@ -15,15 +20,37 @@ const Statistics = (props) => {
     return <p>No feedback given</p>
   }
   return (
-    <div>
+    <>
       <h2>statistics</h2>
-      <StatisticLine text="good" value={props.good} />
-      <StatisticLine text="neutral" value={props.neutral} />
-      <StatisticLine text="bad" value={props.bad} />
-      <StatisticLine text="all" value={props.all} />
-      <StatisticLine text="avg" value={props.avg} />
-      <StatisticLine text="positive" value={props.positivePct} />
-    </div>
+      <table>
+        <tbody>
+          <StatisticLine 
+            text="good" 
+            value={props.good} 
+          />
+          <StatisticLine 
+            text="neutral" 
+            value={props.neutral} 
+          />
+          <StatisticLine 
+            text="bad" 
+            value={props.bad} 
+          />
+          <StatisticLine 
+            text="all" 
+            value={props.all} 
+          />
+          <StatisticLine 
+            text="avg" 
+            value={props.avg} 
+          />
+          <StatisticLine 
+            text="positive" 
+            value={props.positivePct + " %"} 
+          />
+        </tbody>
+      </table>
+    </>
   );
 } 
 
