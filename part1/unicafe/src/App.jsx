@@ -6,16 +6,16 @@ const Button = ({onClick, text}) => (
 );
 
 // Display cafe ratings
-const Display = ({good, neutral, bad, all, avg, positivePct}) => {
+const Statistics = (props) => {
   return (
     <div>
       <h2>statistics</h2>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>all: {all}</p>
-      <p>average: {avg}</p>
-      <p>positive: {positivePct} %</p>
+      <p>good: {props.good}</p>
+      <p>neutral: {props.neutral}</p>
+      <p>bad: {props.bad}</p>
+      <p>all: {props.all}</p>
+      <p>average: {props.avg}</p>
+      <p>positive: {props.positivePct} %</p>
     </div>
   );
 } 
@@ -64,7 +64,7 @@ const App = () => {
       <Button onClick={handleGood} text="good"/>
       <Button onClick={handleNeutral} text="neutral"/>
       <Button onClick={handleBad} text="bad"/>
-      <Display 
+      <Statistics 
         good={good} 
         neutral={neutral} 
         bad={bad} 
