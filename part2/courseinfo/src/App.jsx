@@ -19,10 +19,19 @@ const Part = (props) => (
 const Total = (props) => <p>Number of exercises {props.total}</p>
 
 const Course = ({ course }) => {
+  const calculateTotal = () => {
+    return (
+      course.parts.reduce((acc, part) => {
+        return acc + part.exercises;
+      }, 0)
+    );
+  }
+
   return (
     <article>
       <Header course={course.name} />
       <Content parts={course.parts}/>
+      <Total total={calculateTotal()} />
     </article>
   );
 };
