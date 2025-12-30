@@ -2,10 +2,23 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: "040-1234567" },
-  ]) 
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
   const [newName, setNewName] = useState("")
   const [newPhone, setNewPhone] = useState("")
+  const [query, setQuery] = useState("");
+
+  const personsToShow = query ? 
+    persons.filter((p) => (
+      p.name
+      .toLowerCase()
+      .includes(query.toLowerCase())
+    ))
+    : 
+    persons;
 
   const handleNameChange = (e) => {
     setNewName(e.target.value);
@@ -14,6 +27,10 @@ const App = () => {
   const handlePhoneChange = (e) => {
     setNewPhone(e.target.value);
   }; 
+
+  const handleQueryChange = (e) => {
+    setQuery(e.target.value);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +51,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <div>
+        <p>filter shown with</p>
+        <input type="text" value={query} onChange={handleQueryChange}/>
+      </div>
+      <h2>add a new</h2>
       <form onSubmit={handleSubmit}>
         <div>
           name: 
@@ -58,7 +79,7 @@ const App = () => {
       <h2>Numbers</h2>
       <div>
       {
-        persons.map((person) => (
+        personsToShow.map((person) => (
           <p key={person.name}>
             {person.name} {person.phone}
           </p>
