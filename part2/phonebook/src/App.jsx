@@ -44,16 +44,19 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(persons.find((p) => (p.name === newName))){
-      alert(`${newName} is already added to phonebook`)
-    }else if(persons.find((p) => (p.number === newNumber))){
-      alert(`${newNumber} is already added to phonebook`)
-    }else{
-      const newPerson = {
-        name: newName,
-        number: newNumber
-      };
 
+    const existingPerson =  
+      persons.find((p) => p.name === newName) ||
+      persons.find((p) => p.number === newNumber);
+    
+    const replacePrompt = existingPerson ? `${existingPerson.name}, ${existingPerson.number} is already added to phone book, replace the old number with a new one?` : "";
+
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    };
+
+    if(!existingPerson){
       personService
         .createNew(newPerson)
         .then((p) => {
@@ -63,6 +66,31 @@ const App = () => {
         })
         .catch((err) => {
           alert("Error creating person");
+        });
+    }else if(window.confirm(replacePrompt)){
+      newPerson.id = existingPerson.id;
+      personService
+        .update(newPerson)
+        .then((p) => {
+          setPersons(persons.map((p2) => p2.id === newPerson.id ? newPerson : p2))
+          setNewName("")
+          setNewNumber("")
+        })
+        .catch((err) => {
+          alert("Error updating person")
+        });
+    }
+  };
+
+  const handleDelete = (person) => {
+    if(window.confirm(`Delete ${person.name}?`)){
+      personService
+        .remove(person.id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.name !== person.name));
+        })
+        .catch(() => {
+          alert(`Error deleting ${person.name}`)
         });
     }
   };
@@ -86,7 +114,8 @@ const App = () => {
 
       <h3>Numbers</h3>
       <Persons 
-        persons={personsToShow} 
+        persons={personsToShow}
+        onDelete={handleDelete}
       />
     </div>
   );

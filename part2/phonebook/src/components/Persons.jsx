@@ -1,6 +1,6 @@
 import Person from "./Person";
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, onDelete }) => {
   return (
     <div>
       {
@@ -8,6 +8,7 @@ const Persons = ({ persons }) => {
           <Person 
             key={p.name} 
             person={p}
+            onDelete={onDelete}
           />
         ))
       }
