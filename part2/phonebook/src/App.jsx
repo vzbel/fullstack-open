@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
-import axios from "axios"
+import personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,11 +11,14 @@ const App = () => {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((res) => {
-        setPersons(res.data)
+    personService
+      .getAll()
+      .then((persons) => {
+        setPersons(persons);
       })
+      .catch((err) => {
+        alert("Error retrieving persons from server");
+      });
   }, []);
 
   const personsToShow = query ? 
@@ -51,12 +54,15 @@ const App = () => {
         number: newNumber
       };
 
-      axios
-        .post("http://localhost:3001/persons", newPerson)
-        .then((res) => {
-          setPersons(persons.concat(newPerson));
+      personService
+        .createNew(newPerson)
+        .then((p) => {
+          setPersons(persons.concat(p));
           setNewName("");
           setNewNumber("");
+        })
+        .catch((err) => {
+          alert("Error creating person");
         });
     }
   };
