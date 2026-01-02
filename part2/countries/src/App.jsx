@@ -41,6 +41,7 @@ const App = () => {
           <label htmlFor="country-search">
             find countries 
           </label>
+
           <br />
           <input 
             id="country-search"
