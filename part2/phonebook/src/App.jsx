@@ -3,12 +3,14 @@ import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
 import personService from "./services/persons";
+import SuccessNotification from "./components/SuccessNotification";
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [query, setQuery] = useState("");
+  const [successMsg, setSuccessMsg] = useState(null);
 
   useEffect(() => {
     personService
@@ -63,6 +65,10 @@ const App = () => {
           setPersons(persons.concat(p));
           setNewName("");
           setNewNumber("");
+          setSuccessMsg(`Added ${newPerson.name}`);
+          setTimeout(() => {
+            setSuccessMsg(null);
+          }, 3000);
         })
         .catch((err) => {
           alert("Error creating person");
@@ -75,6 +81,10 @@ const App = () => {
           setPersons(persons.map((p2) => p2.id === newPerson.id ? newPerson : p2))
           setNewName("")
           setNewNumber("")
+          setSuccessMsg(`Updated ${newPerson.name}`);
+          setTimeout(() => {
+            setSuccessMsg(null);
+          }, 3000);
         })
         .catch((err) => {
           alert("Error updating person")
@@ -98,6 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessNotification msg={successMsg}/>
       <Filter 
         query={query} 
         onChange={handleQueryChange} 
