@@ -1,8 +1,16 @@
-.success{
+.success,
+.error{
   border: 3px solid; 
   border-radius: 5px;
   padding: 1rem;
   font-size: 1.2rem;
   background-color: lightgray;
+}
+
+.success{
   color: green;
+}
+
+.error{
+  color: red;
 }

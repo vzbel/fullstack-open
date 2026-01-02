@@ -4,6 +4,7 @@ import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
 import personService from "./services/persons";
 import SuccessNotification from "./components/SuccessNotification";
+import ErrorNotification from "./components/ErrorNotification";
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [query, setQuery] = useState("");
   const [successMsg, setSuccessMsg] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     personService
@@ -87,7 +89,11 @@ const App = () => {
           }, 3000);
         })
         .catch((err) => {
-          alert("Error updating person")
+          setErrorMsg(`Information of ${newPerson.name} has already been removed from server`);
+          setTimeout(() => {
+            setErrorMsg(null);
+          }, 3000);
+          setPersons(persons.filter((p) => p.id !== newPerson.id));
         });
     }
   };
@@ -108,7 +114,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <SuccessNotification msg={successMsg}/>
+      <SuccessNotification msg={successMsg} />
+      <ErrorNotification msg={errorMsg} />
       <Filter 
         query={query} 
         onChange={handleQueryChange} 
