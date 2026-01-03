@@ -9,6 +9,9 @@ const Country = ({ country }) => {
             .getWeather(country.capital[0])
             .then((data) => {
                 setWeatherData(data);
+            })
+            .catch((er) => {
+                console.log(`No weather data for ${country.capital[0]}`);
             });
     }, [country]);
 

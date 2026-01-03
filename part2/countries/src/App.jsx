@@ -13,6 +13,9 @@ const App = () => {
       .then((data) => {
         setCountries(data)
       })
+      .catch((er) => {
+        console.log("Couldn't retrieve all countries data.")
+      })
   }, []);
 
   const queryLower = query.toLowerCase();
