@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
-import axios from "axios";
 import './App.css';
 import CountriesView from './components/CountriesView';
+import countryService from "./services/countries.js";
 
 const App = () => {
   const [query, setQuery] = useState("");
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    axios
-    .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
-    .then((res) => {
-      setCountries(res.data);
-    })
+    countryService
+      .getAll()
+      .then((data) => {
+        setCountries(data)
+      })
   }, []);
 
   const queryLower = query.toLowerCase();
