@@ -22,12 +22,16 @@ let persons = [
 ];
 
 const express = require("express");
+const morgan = require("morgan");
 const PORT = 3001;
 const MATH_LIM = 1e3;
 const app = express();
 
 // json middleware
 app.use(express.json());
+
+// logging middleware
+app.use(morgan("tiny"));
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
