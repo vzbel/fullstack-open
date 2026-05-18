@@ -1,4 +1,4 @@
-const persons = [
+let persons = [
   {
     id: "1",
     name: "Arto Hellas",
@@ -56,6 +56,18 @@ app.get("/api/persons/:id", (req, res) => {
     return res.status(404).send({ message: "No person with that id" });
   }
   res.json(person);
+});
+
+// remove phonebook entry with the given id
+app.delete("/api/persons/:id", (req, res) => {
+  const { id } = req.params;
+  if (!persons.find((p) => p.id === id)) {
+    return res.status(404).send({ message: "No person with that id" });
+  }
+
+  // delete the person
+  persons = persons.filter((p) => p.id !== id);
+  res.end();
 });
 
 app.listen(PORT, () => {
