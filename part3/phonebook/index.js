@@ -77,6 +77,17 @@ app.delete("/api/persons/:id", (req, res) => {
 // create a new person
 app.post("/api/persons", (req, res) => {
   const body = req.body;
+  if (!body.number) {
+    return res.status(500).send({ error: "No number provided" });
+  }
+  if (!body.name) {
+    return res.status(500).send({ error: "No name provided" });
+  }
+
+  // no duplicate names
+  if (persons.find((p) => p.name.toLowerCase() === body.name.toLowerCase())) {
+    return res.status(500).send({ error: "Name must be unique" });
+  }
 
   // create it
   const person = {
