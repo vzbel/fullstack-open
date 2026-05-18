@@ -32,8 +32,7 @@ app.get("/api/persons", (req, res) => {
 // send a page showing # of people
 // and time of request
 app.get("/info", (req, res) => {
-  const peoplePage = 
-  `<!DOCTYPE html>
+  const peoplePage = `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -47,6 +46,16 @@ app.get("/info", (req, res) => {
   </html>`;
 
   res.send(peoplePage);
+});
+
+// get one phonebook entry
+app.get("/api/persons/:id", (req, res) => {
+  const { id } = req.params;
+  const person = persons.find((p) => p.id === id);
+  if (!person) {
+    return res.status(404).send({ message: "No person with that id" });
+  }
+  res.json(person);
 });
 
 app.listen(PORT, () => {
