@@ -29,6 +29,26 @@ app.get("/api/persons", (req, res) => {
   res.json(persons);
 });
 
+// send a page showing # of people
+// and time of request
+app.get("/info", (req, res) => {
+  const peoplePage = 
+  `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <p>Phonebook has info for ${persons.length} people</p>
+    <p>${new Date(Date.now()).toString()}</p>
+  </body>
+  </html>`;
+
+  res.send(peoplePage);
+});
+
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
