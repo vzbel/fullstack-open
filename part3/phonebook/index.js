@@ -23,7 +23,11 @@ let persons = [
 
 const express = require("express");
 const PORT = 3001;
+const MATH_LIM = 1e3;
 const app = express();
+
+// json middleware
+app.use(express.json());
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
@@ -68,6 +72,22 @@ app.delete("/api/persons/:id", (req, res) => {
   // delete the person
   persons = persons.filter((p) => p.id !== id);
   res.end();
+});
+
+// create a new person
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  // create it
+  const person = {
+    id: String(Math.floor(Math.random() * MATH_LIM)),
+    name: body.name,
+    number: body.number,
+  };
+
+  // add to list & send back to client
+  persons = persons.concat(person);
+  res.json(person);
 });
 
 app.listen(PORT, () => {
