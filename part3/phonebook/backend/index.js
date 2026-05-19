@@ -27,6 +27,9 @@ const PORT = 3001;
 const MATH_LIM = 1e3;
 const app = express();
 
+// serve static assets
+app.use(express.static("dist"));
+
 // json middleware
 app.use(express.json());
 
