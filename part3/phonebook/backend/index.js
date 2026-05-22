@@ -27,7 +27,6 @@ const express = require("express");
 const morgan = require("morgan");
 const Person = require("./models/person.js");
 const PORT = 3001;
-const MATH_LIM = 1e3;
 const app = express();
 
 // serve static assets
@@ -105,21 +104,18 @@ app.post("/api/persons", (req, res) => {
     return res.status(500).send({ error: "No name provided" });
   }
 
-  // no duplicate names
-  if (persons.find((p) => p.name.toLowerCase() === body.name.toLowerCase())) {
-    return res.status(500).send({ error: "Name must be unique" });
-  }
-
-  // create it
-  const person = {
-    id: String(Math.floor(Math.random() * MATH_LIM)),
+  const person = new Person({
     name: body.name,
     number: body.number,
-  };
-
-  // add to list & send back to client
-  persons = persons.concat(person);
-  res.json(person);
+  });
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(person);
+    })
+    .catch((error) => {
+      res.status(500).send({ error: "Failed to add person" });
+    });
 });
 
 app.listen(PORT, () => {
