@@ -9,7 +9,7 @@ GET http://localhost:3001/api/persons/6a0faff2a1960a73529396b1
 
 ###
 
-DELETE http://localhost:3001/api/persons/4
+DELETE http://localhost:3001/api/persons/6a0fb155e1d0beb0fe46d746
 
 ###
 

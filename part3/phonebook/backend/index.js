@@ -84,14 +84,14 @@ app.get("/api/persons/:id", (req, res) => {
 
 // remove phonebook entry with the given id
 app.delete("/api/persons/:id", (req, res) => {
-  const { id } = req.params;
-  if (!persons.find((p) => p.id === id)) {
-    return res.status(404).send({ message: "No person with that id" });
-  }
-
-  // delete the person
-  persons = persons.filter((p) => p.id !== id);
-  res.end();
+  Person.findByIdAndDelete(req.params.id).then((person) => {
+    if(!person){
+      return res.status(204).end();
+    }
+    return res.json(person);
+  }).catch((error) => {
+    return res.status(400).send({ message: "Malformed id"});
+  });
 });
 
 // create a new person
