@@ -1,3 +1,4 @@
+/*
 let persons = [
   {
     id: "1",
@@ -20,9 +21,11 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
+*/
 
 const express = require("express");
 const morgan = require("morgan");
+const Person = require("./models/person.js");
 const PORT = 3001;
 const MATH_LIM = 1e3;
 const app = express();
@@ -40,36 +43,44 @@ app.use(
 );
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then((persons) => {
+    res.json(persons);
+  });
 });
 
 // send a page showing # of people
 // and time of request
 app.get("/info", (req, res) => {
-  const peoplePage = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-  </head>
-  <body>
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date(Date.now()).toString()}</p>
-  </body>
-  </html>`;
+  Person.countDocuments({}).then((numberOfPeople) => {
+    const peoplePage = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+    </head>
+    <body>
+      <p>Phonebook has info for ${numberOfPeople} people</p>
+      <p>${new Date(Date.now()).toString()}</p>
+    </body>
+    </html>`;
 
-  res.send(peoplePage);
+    res.send(peoplePage);
+  });
 });
 
 // get one phonebook entry
 app.get("/api/persons/:id", (req, res) => {
-  const { id } = req.params;
-  const person = persons.find((p) => p.id === id);
-  if (!person) {
-    return res.status(404).send({ message: "No person with that id" });
-  }
-  res.json(person);
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (!person) {
+        throw new Error();
+      }
+      res.json(person);
+    })
+    .catch((error) => {
+      return res.status(404).send({ message: "No person with that id" });
+    });
 });
 
 // remove phonebook entry with the given id
