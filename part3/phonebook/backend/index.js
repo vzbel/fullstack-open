@@ -27,6 +27,9 @@ const express = require("express");
 const morgan = require("morgan");
 const Person = require("./models/person.js");
 const PORT = 3001;
+const NO_PERSON_ID = "NoPersonId";
+const MISSING_FIELD = "MissingField";
+const POST_FAILED = "PostFailed";
 const app = express();
 
 // serve static assets
@@ -41,17 +44,20 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body"),
 );
 
-app.get("/api/persons", (req, res) => {
-  Person.find({}).then((persons) => {
-    res.json(persons);
-  });
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+    .then((persons) => {
+      return res.json(persons);
+    })
+    .catch(next);
 });
 
 // send a page showing # of people
 // and time of request
-app.get("/info", (req, res) => {
-  Person.countDocuments({}).then((numberOfPeople) => {
-    const peoplePage = `<!DOCTYPE html>
+app.get("/info", (req, res, next) => {
+  Person.countDocuments({})
+    .then((numberOfPeople) => {
+      const peoplePage = `<!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
@@ -63,45 +69,51 @@ app.get("/info", (req, res) => {
       <p>${new Date(Date.now()).toString()}</p>
     </body>
     </html>`;
-
-    res.send(peoplePage);
-  });
+      return res.send(peoplePage);
+    })
+    .catch(next);
 });
 
 // get one phonebook entry
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => {
       if (!person) {
-        throw new Error();
+        const err = new Error();
+        err.name = NO_PERSON_ID;
+        throw err;
       }
-      res.json(person);
+      return res.json(person);
     })
-    .catch((error) => {
-      return res.status(404).send({ message: "No person with that id" });
-    });
+    .catch(next);
 });
 
 // remove phonebook entry with the given id
-app.delete("/api/persons/:id", (req, res) => {
-  Person.findByIdAndDelete(req.params.id).then((person) => {
-    if(!person){
-      return res.status(204).end();
-    }
-    return res.json(person);
-  }).catch((error) => {
-    return res.status(400).send({ message: "Malformed id"});
-  });
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then((person) => {
+      if (!person) {
+        const err = new Error();
+        err.name = NO_PERSON_ID;
+        throw err;
+      }
+      return res.json(person);
+    })
+    .catch(next);
 });
 
 // create a new person
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
   if (!body.number) {
-    return res.status(500).send({ error: "No number provided" });
+    const err = new Error("No number provided");
+    err.name = MISSING_FIELD;
+    return next(err);
   }
   if (!body.name) {
-    return res.status(500).send({ error: "No name provided" });
+    const err = new Error("No name provided");
+    err.name = MISSING_FIELD;
+    return next(err);
   }
 
   const person = new Person({
@@ -114,9 +126,30 @@ app.post("/api/persons", (req, res) => {
       res.json(person);
     })
     .catch((error) => {
-      res.status(500).send({ error: "Failed to add person" });
+      const err = new Error("Failed to add person");
+      err.name = POST_FAILED;
+      return next(err);
     });
 });
+
+// consolidate error handling
+const errorHandler = (err, req, res, next) => {
+  console.log(err.message);
+
+  switch (err.name) {
+    case "CastError":
+      return res.status(400).send({ error: "Malformed id" });
+    case NO_PERSON_ID:
+      return res.status(404).send({ error: "No person with that id" });
+    case MISSING_FIELD:
+      return res.status(400).send({ error: err.message });
+    case POST_FAILED:
+      return res.status(500).send({ error: err.message });
+  }
+
+  return res.status(500).end();
+};
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
