@@ -132,6 +132,33 @@ app.post("/api/persons", (req, res, next) => {
     });
 });
 
+// update a person
+app.put("/api/persons/:id", (req, res, next) => {
+  if (!req.body) {
+    const err = new Error("No new fields provided");
+    err.name = MISSING_FIELD;
+    return next(err);
+  }
+
+  Person.findById(req.params.id)
+    .then((person) => {
+      person.name = req.body.name || person.name;
+      person.number = req.body.number || person.number;
+
+      person
+        .save()
+        .then((newPerson) => {
+          res.json(newPerson);
+        })
+        .catch((error) => {
+          const err = new Error("Failed to add person");
+          err.name = POST_FAILED;
+          return next(err);
+        });
+    })
+    .catch(next);
+});
+
 // consolidate error handling
 const errorHandler = (err, req, res, next) => {
   console.log(err.message);
