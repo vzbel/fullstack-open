@@ -126,6 +126,9 @@ app.post("/api/persons", (req, res, next) => {
       res.json(person);
     })
     .catch((error) => {
+      if(error.name === "ValidationError"){
+        return next(error);
+      }
       const err = new Error("Failed to add person");
       err.name = POST_FAILED;
       return next(err);
@@ -151,6 +154,9 @@ app.put("/api/persons/:id", (req, res, next) => {
           res.json(newPerson);
         })
         .catch((error) => {
+          if(error.name === "ValidationError"){
+            return next(error);
+          }
           const err = new Error("Failed to add person");
           err.name = POST_FAILED;
           return next(err);
@@ -169,6 +175,7 @@ const errorHandler = (err, req, res, next) => {
     case NO_PERSON_ID:
       return res.status(404).send({ error: "No person with that id" });
     case MISSING_FIELD:
+    case "ValidationError":
       return res.status(400).send({ error: err.message });
     case POST_FAILED:
       return res.status(500).send({ error: err.message });

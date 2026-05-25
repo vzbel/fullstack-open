@@ -73,7 +73,10 @@ const App = () => {
           }, 3000);
         })
         .catch((err) => {
-          alert("Error creating person");
+          setErrorMsg(err.response.data.error);
+          setTimeout(() => {
+            setErrorMsg(null);
+          }, 3000);
         });
     }else if(window.confirm(replacePrompt)){
       newPerson.id = existingPerson.id;
@@ -89,11 +92,10 @@ const App = () => {
           }, 3000);
         })
         .catch((err) => {
-          setErrorMsg(`Information of ${newPerson.name} has already been removed from server`);
+          setErrorMsg(err.response.data.error);
           setTimeout(() => {
             setErrorMsg(null);
           }, 3000);
-          setPersons(persons.filter((p) => p.id !== newPerson.id));
         });
     }
   };

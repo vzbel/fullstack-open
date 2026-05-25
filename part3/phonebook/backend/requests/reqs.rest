@@ -18,7 +18,7 @@ Content-Type: application/json
 
 {
   "number": "040-243563",
-  "name": "Liisa Marttinen"
+  "name": "a"
 }
 
 ### 
@@ -26,5 +26,6 @@ PUT http://localhost:3001/api/persons/6a1097e1a4ae9b41b18ee110
 Content-Type: application/json
 
 {
-  "number": "952-725-7124"
+  "number": "952-725-7123",
+  "name": "ab"
 }
