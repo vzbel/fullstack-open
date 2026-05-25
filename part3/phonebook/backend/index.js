@@ -39,7 +39,7 @@ app.use(express.static("dist"));
 app.use(express.json());
 
 // logging middleware
-morgan.token("body", (req, res) => JSON.stringify(req.body));
+morgan.token("body", (req) => JSON.stringify(req.body));
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body"),
 );
@@ -122,7 +122,7 @@ app.post("/api/persons", (req, res, next) => {
   });
   person
     .save()
-    .then((savedPerson) => {
+    .then(() => {
       res.json(person);
     })
     .catch((error) => {
@@ -166,7 +166,7 @@ app.put("/api/persons/:id", (req, res, next) => {
 });
 
 // consolidate error handling
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res) => {
   console.log(err.message);
 
   switch (err.name) {
